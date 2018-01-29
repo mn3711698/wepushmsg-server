@@ -1,16 +1,25 @@
 #!/usr/bin/python
-# coding:utf-8
+#coding:utf-8
 
 import wxpy
+import socket
 
-def getQRCode(uuid,status,qrcode):
-    print qrcode
-    return
+class Pusher:
+    client=None
+    bot=None
+    
+    def getQRCode(self,uuid,status,qrcode):
+        print "UUID:",uuid
+        print "Status:",status
+        self.client.send(qrcode)
+        return
 
-def login_success():
-    return
+    def login_success(self):
+        return
 
-def logout():
-    return
+    def logout(self):
+        return
 
-bot=wxpy.Bot(True,False,"./QR.png",getQRCode,login_success,logout)
+    def __init__(self,c):
+        self.client=c
+        self.bot=wxpy.Bot(True,False,None,self.getQRCode,self.login_success,self.logout)
