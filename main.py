@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 #coding:utf-8
 
 import wxpy
@@ -9,8 +9,8 @@ class Pusher:
     bot=None
     
     def getQRCode(self,uuid,status,qrcode):
-        print "UUID:",uuid
-        print "Status:",status
+        print("UUID:",uuid)
+        print("Status:",status)
         self.client.send(qrcode)
         return
 
@@ -22,4 +22,4 @@ class Pusher:
 
     def __init__(self,c):
         self.client=c
-        self.bot=wxpy.Bot(True,False,None,self.getQRCode,self.login_success,self.logout)
+        self.bot=wxpy.Bot(True,2,None,self.getQRCode,self.login_success,self.logout)

@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 #coding:utf-8
 
 import json
@@ -12,13 +12,13 @@ s=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 host=jsondata['host']
 port=jsondata['port']
 s.bind((host,port))
-print "Host:",host
-print "Port:",port
+print("Host:",host)
+print("Port:",port)
 
 s.listen(jsondata['listen_max'])
 print "Socket is listening."
 while True:
     c,addr=s.accept()
-    print "Connected!"
-    print "Client IP:",addr
+    print("Connected!")
+    print("Client IP:",addr)
     main.Pusher(c)
