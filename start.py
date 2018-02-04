@@ -16,7 +16,7 @@ print("Host:",host)
 print("Port:",port)
 
 s.listen(jsondata['listen_max'])
-print "Socket is listening."
+print("Socket is listening.")
 while True:
     c,addr=s.accept()
     print("Connected!")
