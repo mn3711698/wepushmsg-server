@@ -17,8 +17,7 @@ print("Port:",port)
 
 s.listen(jsondata['listen_max'])
 print("Socket is listening.")
-while True:
-    c,addr=s.accept()
-    print("Connected!")
-    print("Client IP:",addr)
-    main.Pusher(c)
+c,addr=s.accept()
+print("Connected!")
+print("Client IP:",addr)
+main.Pusher(c)
