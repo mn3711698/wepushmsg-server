@@ -13,6 +13,12 @@ class Pusher:
     with open('config.json','r') as file:
         jsondata=json.load(file)
 
+    def receiveMsg(self,msg):
+        print("Getted messege")
+        sendData={'type':msg.type,'name':msg.sender.nick_name,'text':msg.sender.text,'id':msg.id}
+        self.client.send(json.dumps(sendData))
+        return
+    
     def getQRCode(self,uuid,status,qrcode):
         if(self.noSended):
             print("Sending QR code.")
@@ -31,9 +37,5 @@ class Pusher:
     def __init__(self,c):
         self.client=c
         self.bot=wxpy.Bot(True,2,None,self.getQRCode,self.loginSuccess,self.logout)
-        @self.bot.register()
-        def receiveMsg(self,msg):
-            print("Getted messege")
-            sendData={'type':msg.type,'name':msg.sender.nick_name,'text':msg.sender.text,'id':msg.id}
-            self.client.send(json.dumps(sendData))
-            return
+        func=self.bot.register()
+        func(self.receiveMsg)
