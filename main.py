@@ -14,7 +14,7 @@ class Pusher:
         jsondata=json.load(file)
 
     def receiveMsg(self,msg):
-        print("Getted messege")
+        print("Getted message")
         sendData={'type':msg.type,'name':msg.sender.nick_name,'text':msg.sender.text,'id':msg.id}
         self.client.send(json.dumps(sendData))
         return
