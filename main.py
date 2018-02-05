@@ -15,39 +15,59 @@ class Pusher:
         jsondata=json.load(file)
 
     def receiveMsgUser(self,msg):
-        print("Got message from user")
-        sendData={'name':msg.sender.nick_name,'text':msg.text,'id':msg.id}
-        print(sendData)
-        self.send(json.dumps(sendData),False)
+        print("Got message from a user.(ID:",msg.id,")")
+        sendData={\
+        'sdtp':'user',\
+        'name':msg.sender.nick_name,\
+        'type':msg.type,\
+        'cont':msg.text,\
+        'id':msg.id\
+        }
+        self.send(json.dumps(sendData))
         return
+
+    def receiveMsgGroup(self,msg):
+        print("Got message from a group.(ID:",msg.id,")")
+        sendData={\
+        'sdtp':'group',\
+        'group':msg.sender.nick_name,\
+        'name':msg.member.name,\
+        'type':msg.type,\
+        'cont':msg.text,\
+        'id':msg.id\
+        }
+        self.send(json.dumps(sendData))
     
-    def send(self,msg,isQRCode):
+    def send(self,content,isBytes=False,tp='msg'):
         """
         3B      4B      0~MAX B
-        TYPE    SIZE    MESSAGE
+        TYPE    SIZE    CONTENT
         """
-        if(isQRCode):
-            self.client.sendall(bytes("qrc",encoding = "utf8"))
-            self.client.sendall(struct.pack('<I',len(msg)))
-            self.client.sendall(msg)
+        if(len(tp)!=3):
+            raise TypeError
+        if(isBytes):
+            self.client.sendall(bytes(tp,encoding='utf8'))
+            self.client.sendall(struct.pack('<I',len(content)))
+            self.client.sendall(content)
         else:
-            self.client.sendall(bytes("msg",encoding = "utf8"))
-            msg_bytes=bytes(msg,encoding = "utf8")
-            self.client.sendall(struct.pack('<I',len(msg_bytes)))
-            self.client.sendall(msg_bytes)
+            self.client.sendall(bytes(tp,encoding="utf8"))
+            content_bytes=bytes(content,encoding="utf8")
+            self.client.sendall(struct.pack('<I',len(content_bytes)))
+            self.client.sendall(content_bytes)
         return
 
     def getQRCode(self,uuid,status,qrcode):
         if(self.noSended):
             print("UUID:",uuid)
             print("Sending QR code.")
-            self.send(qrcode,True)
+            self.send(qrcode,True,'qrc')
             self.noSended=False
         print("Status:",status)
         return
 
     def loginSuccess(self):
         print("Your account logged in successfully.")
+        self.send("Successfull",tp='suc')
         return
 
     def logout(self):
@@ -57,5 +77,6 @@ class Pusher:
     def __init__(self,c):
         self.client=c
         self.bot=wxpy.Bot(True,2,None,self.getQRCode,self.loginSuccess,self.logout)
-        self.bot.register(chats=wxpy.User,msg_types='Text')(self.receiveMsgUser)
+        self.bot.register(chats=wxpy.User)(self.receiveMsgUser)
+        self.bot.register(chats=wxpy.Group)(self.receiveMsgGroup)
         while(True):pass
